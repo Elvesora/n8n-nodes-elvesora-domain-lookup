@@ -1,0 +1,50 @@
+{
+	"name": "Elvesora Company Domain Lookup",
+	"nodes": [
+		{
+			"parameters": {},
+			"id": "608307a2-86c4-45b8-9bf4-7b47a3d83bd0",
+			"name": "When clicking Execute Workflow",
+			"type": "n8n-nodes-base.manualTrigger",
+			"typeVersion": 1,
+			"position": [260, 300]
+		},
+		{
+			"parameters": {
+				"operation": "lookupDomain",
+				"companyName": "Acme Corporation",
+				"additionalContext": "United States, industrial manufacturing",
+				"simplify": true,
+				"options": {}
+			},
+			"id": "90039054-023f-41bf-a30a-b24fa57ce3b7",
+			"name": "Lookup Company Domain",
+			"type": "n8n-nodes-elvesora-domain-lookup.elvesoraDomainLookup",
+			"typeVersion": 1,
+			"position": [520, 300]
+		}
+	],
+	"pinData": {},
+	"connections": {
+		"When clicking Execute Workflow": {
+			"main": [
+				[
+					{
+						"node": "Lookup Company Domain",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		}
+	},
+	"active": false,
+	"settings": {
+		"executionOrder": "v1"
+	},
+	"versionId": "2bb9b7a6-70b0-435e-86be-3a9591431aa5",
+	"meta": {
+		"templateCredsSetupCompleted": false
+	},
+	"tags": []
+}

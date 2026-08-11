@@ -1,0 +1,74 @@
+{
+	"name": "n8n-nodes-elvesora-domain-lookup",
+	"version": "0.1.0",
+	"description": "Resolve company names to likely official domains with confidence and review-routing evidence in n8n.",
+	"license": "MIT",
+	"homepage": "https://www.elvesora.com/products/domain-lookup",
+	"keywords": [
+		"n8n-community-node-package",
+		"n8n",
+		"elvesora",
+		"domain lookup",
+		"company domain",
+		"company data",
+		"lead enrichment"
+	],
+	"author": {
+		"name": "Elvesora",
+		"email": "support@elvesora.com",
+		"url": "https://www.elvesora.com"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/Elvesora/n8n-nodes-elvesora-domain-lookup.git"
+	},
+	"bugs": {
+		"url": "https://github.com/Elvesora/n8n-nodes-elvesora-domain-lookup/issues"
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"engines": {
+		"node": ">=22.22.0"
+	},
+	"scripts": {
+		"build": "n8n-node build",
+		"build:watch": "tsc --watch",
+		"dev": "n8n-node dev",
+		"format": "prettier --write .",
+		"format:check": "prettier --check .",
+		"lint": "n8n-node lint",
+		"lint:fix": "n8n-node lint --fix",
+		"test": "npm run build && node --test test/credential.test.js test/node.test.js test/utils.test.js",
+		"pack:dry-run": "node scripts/verify-package.cjs",
+		"check": "npm run format:check && npm run lint && npm test && npm run pack:dry-run",
+		"release": "n8n-node release",
+		"prepublishOnly": "n8n-node prerelease"
+	},
+	"files": [
+		"dist/credentials",
+		"dist/icons",
+		"dist/nodes",
+		"examples"
+	],
+	"n8n": {
+		"n8nNodesApiVersion": 1,
+		"strict": true,
+		"credentials": [
+			"dist/credentials/ElvesoraApi.credentials.js"
+		],
+		"nodes": [
+			"dist/nodes/ElvesoraDomainLookup/ElvesoraDomainLookup.node.js"
+		]
+	},
+	"devDependencies": {
+		"@n8n/node-cli": "0.43.2",
+		"eslint": "9.39.4",
+		"prettier": "3.8.3",
+		"release-it": "20.2.0",
+		"typescript": "5.9.3"
+	},
+	"peerDependencies": {
+		"n8n-workflow": "*"
+	}
+}
