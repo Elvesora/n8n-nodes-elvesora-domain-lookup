@@ -17,13 +17,17 @@ jobs:
       id-token: write
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Set up Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: '24.x'
-          cache: npm
+          registry-url: 'https://registry.npmjs.org'
+          package-manager-cache: false
+
+      - name: Verify release tag
+        run: npm run release:verify -- "$GITHUB_REF_NAME"
 
       - name: Install dependencies
         run: npm ci

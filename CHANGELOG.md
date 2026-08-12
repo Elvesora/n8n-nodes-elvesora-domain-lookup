@@ -15,5 +15,9 @@ All notable changes to this project are documented in this file. The format foll
 - Credit-aware error guidance and Continue On Fail output.
 - Unit and node-execution tests, CI, provenance publishing, documentation, and example workflow.
 
+### Security
+
+- Reject release tags that are not exact SemVer or do not match the package version.
+
 [Unreleased]: https://github.com/Elvesora/n8n-nodes-elvesora-domain-lookup/compare/0.1.0...HEAD
 [0.1.0]: https://github.com/Elvesora/n8n-nodes-elvesora-domain-lookup/releases/tag/0.1.0

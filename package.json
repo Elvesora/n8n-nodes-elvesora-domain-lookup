@@ -39,8 +39,9 @@
 		"format:check": "prettier --check .",
 		"lint": "n8n-node lint",
 		"lint:fix": "n8n-node lint --fix",
-		"test": "npm run build && node --test test/credential.test.js test/node.test.js test/utils.test.js",
+		"test": "npm run build && node --test test/credential.test.js test/node.test.js test/release.test.js test/utils.test.js",
 		"pack:dry-run": "node scripts/verify-package.cjs",
+		"release:verify": "node scripts/verify-release.cjs",
 		"check": "npm run format:check && npm run lint && npm test && npm run pack:dry-run",
 		"release": "n8n-node release",
 		"prepublishOnly": "n8n-node prerelease"
