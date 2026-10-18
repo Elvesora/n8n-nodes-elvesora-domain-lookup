@@ -1,10 +1,12 @@
 import type {
-	IAuthenticateGeneric,
+	IAuthenticate,
 	Icon,
 	ICredentialTestRequest,
 	ICredentialType,
 	INodeProperties,
 } from 'n8n-workflow';
+import { resolveElvesoraBaseUrl } from '../nodes/ElvesoraDomainLookup/baseUrl';
+import { ELVESORA_API_BASE_URL } from '../nodes/ElvesoraDomainLookup/types';
 
 export class ElvesoraApi implements ICredentialType {
 	name = 'elvesoraApi';
@@ -28,20 +30,32 @@ export class ElvesoraApi implements ICredentialType {
 			default: '',
 			description: 'Team API key created in the Elvesora Domain Lookup API settings',
 		},
+		{
+			displayName: 'Base URL',
+			name: 'baseUrl',
+			type: 'string',
+			default: ELVESORA_API_BASE_URL,
+			description:
+				'API base URL including /api. Use HTTPS, or a loopback HTTP URL for local development.',
+		},
 	];
 
-	authenticate: IAuthenticateGeneric = {
-		type: 'generic',
-		properties: {
+	authenticate: IAuthenticate = async (credentials, requestOptions) => {
+		const baseUrl = resolveElvesoraBaseUrl(credentials.baseUrl);
+		return {
+			...requestOptions,
+			url: requestOptions.url.startsWith('/')
+				? `${baseUrl}${requestOptions.url}`
+				: requestOptions.url,
 			headers: {
-				Authorization: '=Bearer {{$credentials.apiKey}}',
+				...requestOptions.headers,
+				Authorization: `Bearer ${credentials.apiKey}`,
 			},
-		},
+		};
 	};
 
 	test: ICredentialTestRequest = {
 		request: {
-			baseURL: 'https://prospecting.elvesora.com/api',
 			url: '/prospecting/ping',
 			method: 'GET',
 			sendCredentialsOnCrossOriginRedirect: false,

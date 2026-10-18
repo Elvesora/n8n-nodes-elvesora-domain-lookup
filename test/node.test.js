@@ -8,7 +8,7 @@ const {
 	ElvesoraDomainLookup,
 } = require('../dist/nodes/ElvesoraDomainLookup/ElvesoraDomainLookup.node.js');
 
-function executionContext(itemParameters, responses, continueOnFail = false) {
+function executionContext(itemParameters, responses, continueOnFail = false, credentials = {}) {
 	const calls = [];
 	const inputItems = itemParameters.map((_, index) => ({ json: { index } }));
 	let responseIndex = 0;
@@ -19,6 +19,7 @@ function executionContext(itemParameters, responses, continueOnFail = false) {
 			return Object.hasOwn(parameters, name) ? parameters[name] : fallback;
 		},
 		getNode: () => nodeDefinition(),
+		getCredentials: async () => credentials,
 		continueOnFail: () => continueOnFail,
 		helpers: {
 			httpRequestWithAuthentication: async (credentialType, options) => {
@@ -157,6 +158,33 @@ test('raw mode returns the complete response plus the request ID', async () => {
 	const [output] = await node.execute.call(context);
 
 	assert.deepEqual(output[0].json, { ...responseBody, request_id: 'req-raw-123456' });
+});
+
+test('lookup uses the configured API base URL and keeps authenticated redirect protection', async () => {
+	for (const baseUrl of ['http://127.0.0.1:8000/api', 'https://api.example.test/custom/api']) {
+		const { context, calls } = executionContext(
+			[parameters()],
+			[{ statusCode: 200, headers: {}, body: foundResponse() }],
+			false,
+			{ baseUrl: `${baseUrl}/` },
+		);
+		const node = new ElvesoraDomainLookup();
+		const [output] = await node.execute.call(context);
+		assert.equal(calls.length, 1);
+		assert.equal(calls[0].options.url, `${baseUrl}/prospecting/company`);
+		assert.equal(calls[0].credentialType, 'elvesoraApi');
+		assert.equal(calls[0].options.sendCredentialsOnCrossOriginRedirect, false);
+		assert.equal(output[0].json.domain, 'acme.com');
+	}
+});
+
+test('invalid credential base URL is rejected before the HTTP helper is called', async () => {
+	const { context, calls } = executionContext([parameters()], [], false, {
+		baseUrl: 'http://api.example.test/api',
+	});
+	const node = new ElvesoraDomainLookup();
+	await assert.rejects(() => node.execute.call(context), /Base URL/);
+	assert.equal(calls.length, 0);
 });
 
 test('rejects every local input failure before making a billable request', async () => {

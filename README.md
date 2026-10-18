@@ -50,6 +50,8 @@ Community nodes installed directly from npm are available only on self-hosted n8
 
 Treat the API key as a secret. Rotate it in Elvesora if it is exposed or no longer needed.
 
+The optional **Base URL** defaults to `https://prospecting.elvesora.com/api`. Existing credentials use this address when the field is absent or blank. For a local development instance running on the same host as n8n, set it to `http://127.0.0.1:8000/api` and use that instance's team API key. The credential check and lookup both use this address. Include the API path prefix; trailing slashes are optional. HTTPS is required except for HTTP on `localhost`, IPv4 loopback addresses, or `[::1]`. User information, query strings, and fragments are rejected before a request is sent.
+
 ## Node operation
 
 ### Lookup Company Domain
@@ -148,7 +150,7 @@ Import [`examples/company-domain-lookup.workflow.json`](examples/company-domain-
 
 ## Data handling
 
-The node sends the company name, optional context, and optional request ID to the Elvesora Domain Lookup API. It does not read environment variables, access the filesystem, execute subprocesses, or send data to unrelated services. n8n encrypts the saved API credential using the n8n instance's credential encryption configuration.
+The node sends the company name, optional context, optional request ID, and API key to the API address configured in the credential. It does not read environment variables, access the filesystem, or execute subprocesses. Use a trusted API address. n8n encrypts the saved API credential using the n8n instance's credential encryption configuration.
 
 Review the [Elvesora Privacy Policy](https://www.elvesora.com/privacy-policy) and [Terms of Service](https://www.elvesora.com/terms-of-use) before processing customer data.
 
