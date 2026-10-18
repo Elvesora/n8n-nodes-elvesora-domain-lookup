@@ -1,6 +1,11 @@
-import type { IDataObject, IExecuteFunctions, IHttpRequestOptions } from 'n8n-workflow';
 import {
-	ELVESORA_API_BASE_URL,
+	NodeOperationError,
+	type IDataObject,
+	type IExecuteFunctions,
+	type IHttpRequestOptions,
+} from 'n8n-workflow';
+import { resolveElvesoraBaseUrl } from './baseUrl';
+import {
 	ELVESORA_LOOKUP_PATH,
 	ELVESORA_REQUEST_TIMEOUT_MS,
 	type ElvesoraHttpResponse,
@@ -11,6 +16,13 @@ export async function elvesoraApiRequest(
 	body: IDataObject,
 	requestId?: string,
 ): Promise<ElvesoraHttpResponse> {
+	const credentials = await this.getCredentials('elvesoraApi');
+	let baseUrl: string;
+	try {
+		baseUrl = resolveElvesoraBaseUrl(credentials.baseUrl);
+	} catch (error) {
+		throw new NodeOperationError(this.getNode(), error as Error);
+	}
 	const headers: IDataObject = {
 		Accept: 'application/json',
 		'Content-Type': 'application/json',
@@ -20,7 +32,7 @@ export async function elvesoraApiRequest(
 
 	const options: IHttpRequestOptions = {
 		method: 'POST',
-		url: `${ELVESORA_API_BASE_URL}${ELVESORA_LOOKUP_PATH}`,
+		url: `${baseUrl}${ELVESORA_LOOKUP_PATH}`,
 		headers,
 		body,
 		json: true,
